@@ -23,44 +23,21 @@ This configuration uses a `null_resource` to run a `local-exec` provisioner.
 
 1.  **Connect to TFE**: Configure this GitLab repository as the VCS provider for a workspace in your TFE instance.
 2.  **Set Sleep Time (Optional)**: In the TFE workspace UI, go to **Variables**. Add a **Terraform Variable** with the key `sleep_duration_seconds` and set the value to your desired time in seconds (e.g., `1800` for 30 minutes). If you don't set this, it will use the default (360 seconds / 6 minutes).
-3.  **Queue Plan**: Start a new plan.
+3.  **Queue Plan**: Start a new plan in the TFE workspace. Note the **Run ID** from the TFE UI (e.g., `run-vCQbYPYy7K2sfR7Z`).
 4.  **Run Apply**: Approve the plan and run the apply.
-5.  **Connect to Agent**: The TFE UI will show the run in the "Applying" phase and will eventually hang, printing the message "Sleeping for...". At this point, find the TFE agent container in your infrastructure (e.g., Kubernetes, ECS, Docker) and connect to it using your platform's tools.
+5.  **Connect to Agent**: Once the TFE UI shows the run is "Applying" and logging the "Sleeping for..." message, proceed to the "How to Connect to the Agent" section below.
 
 ---
 
-## Configuration
+## How to Connect to the Agent (using Podman)
 
-### Sleep Duration
+When the run is paused, you can find and access the specific agent container on your host machine using the **Run ID** from the TFE UI.
 
-You can control the sleep duration by setting a variable in your TFE workspace.
+### 1. Find the Container ID
 
-* **Variable Name**: `sleep_duration_seconds`
-* **Type**: Terraform Variable
-* **Value**: The number of seconds you want the agent to sleep (e.g., `3600` for 1 hour).
-* **Default**: If not set, the default is `360` (6 minutes), as defined in `variables.tf`.
+Open a terminal on the host machine where your TFE agents are running. Use the `podman ps` command to filter by the `run_id` label.
 
+Replace `run-vCQbYPYy7K2sfR7Z` with your actual Run ID.
 
-
----
-
-## Run After Other Resources
-
-If you are using this to debug a problem that happens *after* other resources are created, add a `depends_on` block to the `null_resource` in `main.tf`. This ensures the sleep only happens after your other resources have been successfully applied.
-
-```terraform
-resource "null_resource" "debug_job_with_sleep" {
-  
-  depends_on = [
-    aws_instance.my_server,
-    aws_db_instance.my_database
-  ]
-
-  triggers = {
-    always_run = timestamp()
-  }
-
-  provisioner "local-exec" {
-    # ...
-  }
-}
+```sh
+podman ps --filter "label=run_id=run-vCQbYPYy7K2sfR7Z"
