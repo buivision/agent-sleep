@@ -17,10 +17,12 @@ resource "null_resource" "debug_job_with_sleep" {
         echo "Main job finished with exit code: $$JOB_EXIT_CODE"
 
         # --- THIS IS THE MODIFIED PART ---
-        # The '${...}' below is a real Terraform variable.
+        # This is the comment that needs to be escaped with '$$'
+        # The '$${...}' below is a real Terraform variable.
         echo "Sleeping for ${var.sleep_duration_seconds} seconds to allow SSH/exec debugging."
         echo "Find this TFE agent container on your infrastructure to connect."
         echo "---"
+        # This is the REAL variable, so it correctly uses a single '$'
         sleep ${var.sleep_duration_seconds}
         # --- END OF MODIFIED PART ---
       }
