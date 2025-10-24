@@ -19,6 +19,22 @@ This configuration uses a `null_resource` to run a `local-exec` provisioner.
 
 ---
 
+## Configuration
+
+Configuration
+Sleep Duration
+You can control the sleep duration by setting a variable in your TFE workspace.
+
+Variable Name: sleep_duration_seconds
+
+Type: Terraform Variable
+
+Value: The number of seconds you want the agent to sleep (e.g., 3600 for 1 hour).
+
+Default: If not set, the default is 360 (6 minutes), as defined in variables.tf.
+
+___
+
 ## How to Use
 
 1.  **Connect to TFE**: Configure this GitLab repository as the VCS provider for a workspace in your TFE instance.
@@ -41,3 +57,16 @@ Replace `run-vCQbYPYy7K2sfR7Z` with your actual Run ID.
 
 ```sh
 podman ps --filter "label=run_id=run-vCQbYPYy7K2sfR7Z"
+```
+This will give you an output like this:
+```
+CONTAINER ID   IMAGE                                COMMAND     CREATED          STATUS          PORTS     NAMES
+a4e9b1d72f1a   docker.io/hashicorp/tfc-agent:latest   ...         3 minutes ago    Up 3 minutes              inspiring_murdock
+Copy the CONTAINER ID (e.g., a4e9b1d72f1a).
+```
+2. Get a Shell Inside the Container
+Use the podman exec command with the container ID to get an interactive shell.
+```
+podman exec -it a4e9b1d72f1a /bin/sh
+```
+You will now have a shell prompt (/ # or $) inside the TFE agent, and you are free to debug for the remainder of your sleep duration.
