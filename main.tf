@@ -17,7 +17,7 @@ resource "null_resource" "debug_job_with_sleep" {
         echo "Main job finished with exit code: $$JOB_EXIT_CODE"
 
         # --- THIS IS THE MODIFIED PART ---
-        # This '${...}' is a Terraform variable, so it does NOT get escaped.
+        # The '${...}' below is a real Terraform variable.
         echo "Sleeping for ${var.sleep_duration_seconds} seconds to allow SSH/exec debugging."
         echo "Find this TFE agent container on your infrastructure to connect."
         echo "---"
