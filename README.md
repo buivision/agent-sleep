@@ -1,3 +1,19 @@
+<details>
+
+<summary>Tips for collapsed sections</summary>
+
+### You can add a header
+
+You can add text within a collapsed section.
+
+You can add an image or a code block, too.
+
+```ruby
+   puts "Hello World"
+```
+
+</details>
+
 # TFE Agent Debugging Workspace
 
 This repository contains a Terraform configuration designed to help debug Terraform Enterprise (TFE) agents.
